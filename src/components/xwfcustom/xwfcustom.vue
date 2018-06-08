@@ -15,6 +15,9 @@
               height="600"
               :fit="true"
               size="small"
+              :summary-method="getSummaries"
+              show-summary
+
             >
               <el-table-column
                 sortable
@@ -410,7 +413,7 @@
               style="width: 170px"
               v-model="startTime"
               :picker-options="{
-                selectableRange: '06:30:00 - 23:30:00'
+                selectableRange: '00:00:00 - 23:59:59'
               }"
               :placeholder="startTimePre">
             </el-time-picker>
@@ -421,7 +424,7 @@
               v-model="endTime"
               @change="endTimeFun"
               :picker-options="{
-                selectableRange: '06:30:00 - 23:30:00'
+                selectableRange: '00:00:00 - 23:59:59'
               }"
               :placeholder="endTimePre">
             </el-time-picker>
@@ -777,6 +780,27 @@
           })
         },
         //增加餐厅
+        getSummaries(param) {
+          const { columns, data } = param;
+          const sums = [];
+          let num = 0
+          columns.forEach((column, index) => {
+            if (index === 0) {
+              sums[index] = '总计';
+              return;
+            }
+            const values = data.map(item => Number(item[column.property]));
+            if (index === 1) {
+              sums[index] = data.length + '条';
+              return;
+            }
+            if (1 < index) {
+              sums[index] = '';
+              return;
+            }
+          });
+          return sums;
+        },
         addRestaurant(formName1,formName2){
           let _this = this
           console.log(formName1);
@@ -961,6 +985,8 @@
           this.$request(this.url.legalPerson2,'json',data).then((res)=>{
             this.restaurantPerson.idcard = res.data.data[0].idcard
             this.restaurantPerson.name = res.data.data[0].name
+            this.addOrEdit = 2;
+            console.log(this.addOrEdit);
 
           }).catch((err)=>{
             console.log(err);
@@ -971,7 +997,7 @@
             this.startTimePre = start[0]
             this.endTimePre = start[1]
           }
-
+          this.addOrEdit = 2;
           // to  updateReataurant
         },
         updateReataurant(){
