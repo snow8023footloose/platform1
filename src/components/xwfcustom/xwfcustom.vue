@@ -283,8 +283,16 @@
               <el-table-column
                 fixed="right"
                 label="操作"
-                width="100">
+                width="200">
                 <template slot-scope="scope">
+                  <el-button
+                    type="primary"
+                    size="mini"
+                    icon="el-icon-share"
+                    round
+                    @click="sendCoupon(scope.row,scope.$index)">
+                    发放优惠券
+                  </el-button>
                   <el-button
                     type="primary"
                     size="mini"
@@ -310,6 +318,24 @@
         </el-tab-pane>
       </el-tabs>
 
+      <!--发放优惠券弹框-->
+      <el-dialog top="4vh" title="发放优惠券" :visible.sync="showCouponDialog" ref="showCouponData">
+        <el-form :model="couponForm" ref="confirmCouponData" :rules="rulesCouponData">
+          <el-form-item label="数量" :label-width="formLabelWidth" prop="num">
+            <el-input autofocus="true" v-model.number="couponForm.num" auto-complete="off" placeholder="请输入数量"></el-input>
+          </el-form-item>
+          <el-form-item label="价格" :label-width="formLabelWidth" prop="price">
+            <el-input autofocus="true" v-model.number="couponForm.price" auto-complete="off" placeholder="请输入数量"></el-input>
+          </el-form-item>
+          <el-form-item label="总计" :label-width="formLabelWidth">
+            <el-input v-model="couponForm.num*couponForm.price"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="showCouponDialog = false">取 消</el-button>
+          <el-button icon="el-icon-share" type="primary" @click="confirmCoupon('confirmCouponData','showCouponData')">确定发放</el-button>
+        </div>
+      </el-dialog>
       <!--餐厅信息弹框-->
       <el-dialog top="4vh" title="餐厅信息" :visible.sync="showFormMsg" ref="showRestaurantData">
         <el-form :model="restaurantData" ref="confirmRestaurantData" :rules="rulesRestaurantData">
@@ -578,9 +604,14 @@
           },
           response:{},
           activeName: 'first',
+          couponForm:{
+            num:2,
+            price:23
+          },
           addOrEdit: 0,
           showForm: false,
           showFormMsg: false,
+          showCouponDialog:false,
           showFormCeo: false,
           showFormBrief: false,
           showFormName: false,
@@ -588,55 +619,10 @@
           havePerson:false,
           startTime:'',
           endTime:'',
-          eidForm: {
-            name: '',
-            gender: 1,
-            region: '',
-            idCard:'',
-            phone:'',
-          },
+          eidForm: {},
           startTimePre:'',
           endTimePre:'',
-          restaurantDataTable: [{
-            name: '一家粉店',
-            tid: 0,
-            status: 1,
-            phone: 15773153167,
-            backupPhone: '',
-            country: '',
-            province: '',
-            city: '',
-            area: '',
-            address: '华府一航2915',
-            pid: 0,
-            eid: '',
-            eleId: '',
-            wifiName: '',
-            wifiPassword: '',
-            brandName: '',
-            brandLogo: '',
-            business: '',
-            businessPermitNum: 2012323201212,
-            businessPermitImg: '',
-            foodPermitNum: 2012323201215,
-            foodPermitImg: '',
-            logo: '',
-            doorImg: '',
-            cashierDeskImg: '',
-            sceneImgOne: '',
-            sceneImgTwo: '',
-            sceneImgThree: '',
-            description: '',
-            remark: '',
-            longitude: '',
-            latitude: '',
-            createTime: '',
-            updateTime: '',
-            expireTime: '',
-            expireDay: '',
-            serviceChange: '',
-            oid: ''
-          }],
+          restaurantDataTable: [],
           addNewPerson: 0,
           addNewRestaurant:0,
           restaurantData: {
@@ -657,6 +643,14 @@
             name: '1.jpg',
             url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
           }],
+          rulesCouponData:{
+            price: [
+              {required: true, message:'请输入价格', trigger:'blur'},
+            ],
+            num: [
+              {required: true, message:'请输入数量', trigger:'blur'},
+            ],
+          },
           rulesRestaurantData: {
             name: [
               {required: true, message:'请输入名', trigger:'blur'},
@@ -774,7 +768,7 @@
           this.$request(this.url.restaurant2,'json',Data).then((res)=>{
             let response = res.data.data
             this.restaurantDataTable = response
-            console.log(response);
+            // console.log(response);
           }).catch((err)=>{
             console.log(err);
           })
@@ -963,6 +957,11 @@
               message: '已取消删除'
             });
           });
+        },
+        sendCoupon(row,index){
+          console.log(row, index);
+          this.showCouponDialog = !this.showCouponDialog
+          this.couponForm = {}
         },
 
         //修改餐厅

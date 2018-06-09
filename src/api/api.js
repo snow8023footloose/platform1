@@ -21,6 +21,13 @@ export function getAliyunSTSAccessToken() {
 
 export  function urlColletion() {
   return {
+
+    // 公司卡券接口
+    couponAdd: BURL + '/restaurant/add',
+    couponDelete: BURL + '/restaurant/delete',
+    couponUpdate: BURL + '/restaurant/update',
+    couponComplexPageQuery: BURL + '/restaurant/complexPageQuery',
+
     //餐厅请求接口
 
     // 添加账号

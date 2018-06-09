@@ -62,12 +62,12 @@
               <span slot="title" class="title">我的客户</span>
             </el-menu-item>
           </router-link>
-          <!--<router-link :to="{path:'/platform/xwfer/xwfer'}" class="vlink">-->
-            <!--<el-menu-item index="2">-->
-              <!--<i class="el-icon-star-off"></i>-->
-              <!--<span slot="title" class="title">个人信息</span>-->
-            <!--</el-menu-item>-->
-          <!--</router-link>-->
+          <router-link :to="{path:'/platform/xwfer/coupon'}" class="vlink">
+            <el-menu-item index="2">
+              <i class="el-icon-star-off"></i>
+              <span slot="title" class="title">公司卡券</span>
+            </el-menu-item>
+          </router-link>
           <!--<router-link :to="{path:'/platform/xwfer/xwffunction'}" class="vlink">-->
             <!--<el-menu-item index="3">-->
               <!--<i class="el-icon-setting"></i>-->
@@ -352,7 +352,7 @@ td
   display block
 
 .el-table--fit
-  height 725px !important
+  height 600px
 
 .el-tabs__item
   font-size 19px
@@ -365,12 +365,12 @@ td
 
 @media screen and (max-width: 1200px)
   .el-table--fit
-    height 570px !important
+    height 510px !important
 
   .setting,.tables,.xwfcustom,.xwfer,.xwffunction,.coupon,.member
     >.el-tabs
       .el-tabs__content
-        height 570px !important
+        height 530px !important
         overflow-y scroll
 
   .login
@@ -592,4 +592,6 @@ td
       margin-left 58% !important
     .block,.small-block
       width 73%
+
+
 </style>
