@@ -28,7 +28,14 @@ export  function urlColletion() {
     couponUpdate: BURL + '/restaurant/update',
     couponComplexPageQuery: BURL + '/restaurant/complexPageQuery',
 
+
+    //折扣卡券
+    discountCouponAdd: BURL + '/discountCoupon/add',
+    discountCouponComplexPageQuery: BURL + '/discountCoupon/complexPageQuery',
+    discountCouponDelete: BURL + '/discountCoupon/delete',
+    discountCouponUpdate: BURL + '/discountCoupon/update',
     //餐厅请求接口
+    couponType: BURL + '/couponType/complexPageQuery',
 
     // 添加账号
     restaurantWithdrawAccount: BURL + '/restaurantWithdrawAccount/add',

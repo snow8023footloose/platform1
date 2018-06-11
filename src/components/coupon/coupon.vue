@@ -4,74 +4,134 @@
         v-model="activeName"
         @tab-click="handleClick"
       >
-        <!--餐厅信息表模块-->
+
         <el-tab-pane label="餐厅列表" name="first">
-          <template>
-            <!-- <span>{{msg}}</span> -->
-            <el-table
-              :data="couponDataTable"
-              style="width: 100%"
-              height="600"
-              :fit="true"
-              size="small"
-              :summary-method="getSummaries"
-              show-summary
+          <el-row>
+            <!--餐厅信息表模块-->
+            <el-col :span="8">
+              <template>
+                <!-- <span>{{msg}}</span> -->
+                <el-table
+                  :data="couponDataTable"
+                  style="width: 100%"
+                  height="600"
+                  :fit="true"
+                  size="small"
+                  :summary-method="getSummaries"
+                  show-summary
 
-            >
-              <el-table-column
-                sortable
-                fixed="left"
-                prop="name"
-                label="餐厅名"
-                width="120"
-              >
-              </el-table-column>
-              <el-table-column
-                sortable
-                prop="Tid"
-                label="餐厅类型"
-                width="100">
-              </el-table-column>
-              <el-table-column
-                sortable
-                width="80"
-                prop="status"
-                label="状态">
-                <template slot-scope="scope">
-                  <span v-if="scope.row.status === 'disable'">不可用</span>
-                  <span v-if="scope.row.status === 'enable'">可用</span>
-                </template>
-              </el-table-column>
-
-              <el-table-column
-                sortable
-                width="100"
-                prop="oid"
-                label="操作者id">
-              </el-table-column>
-              <el-table-column
-                fixed="right"
-                label="操作"
-                width="100">
-                <template slot-scope="scope">
-                  <el-button
-                    type="primary"
-                    size="mini"
-                    icon="el-icon-edit"
-                    circle
-                    @click="editCoupon(scope.row,scope.$index); showFormMsg = true">
-                  </el-button>
-                  <el-button
-                    type="danger"
-                    size="mini"
-                    icon="el-icon-delete"
-                    circle
-                    @click.native.prevent="deleteCoupon(scope.row,scope.$index)">
-                  </el-button>
-                </template>
-              </el-table-column>
-            </el-table>
-          </template>
+                >
+                  <el-table-column
+                    sortable
+                    fixed="left"
+                    prop="name"
+                    label="餐厅名"
+                    width="150"
+                  >
+                  </el-table-column>
+                  <el-table-column
+                    sortable
+                    width="90"
+                    prop="status"
+                    label="操作">
+                    <template slot-scope="scope">
+                      <el-button size="small" type="primary" plain @click="lookCouponMsg(scope.row.id)">查看</el-button>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </template>
+            </el-col>
+            <el-col :span="14">
+              <template>
+                <el-table
+                  :data="discountCoupon"
+                  style="width: 100%;border: 2px solid #ccc;border-radius: 10px;margin-left: 10px"
+                  height="600"
+                  :fit="true"
+                  size="small"
+                  :summary-method="getSummaries"
+                  show-summary
+                >
+                  <el-table-column
+                    sortable
+                    fixed="left"
+                    prop="name"
+                    label="卡券名称"
+                    width="100"
+                  >
+                  </el-table-column>
+                  <el-table-column
+                    sortable
+                    prop="price"
+                    label="价格"
+                    width="80"
+                  >
+                  </el-table-column>
+                  <el-table-column
+                    sortable
+                    prop="type"
+                    label="类型"
+                    width="120">
+                    <template slot-scope="scope">
+                      <span v-if="scope.row.type === 'coupon'">优惠券</span>
+                      <el-button size="mini" v-if="scope.row.type === 'platform-voucher'">平台代金券</el-button>
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    sortable
+                    prop="stock"
+                    label="剩余数"
+                    width="80">
+                  </el-table-column>
+                  <el-table-column
+                    sortable
+                    prop="publishNum"
+                    label="发行数"
+                    width="80">
+                  </el-table-column>
+                  <el-table-column
+                    sortable
+                    width="100"
+                    prop="minimumCharge"
+                    label="使用下限">
+                  </el-table-column>
+                  <el-table-column
+                    sortable
+                    width="100"
+                    prop="minimumGiveCharge"
+                    label="获得下限">
+                  </el-table-column>
+                  <el-table-column
+                    sortable
+                    width="100"
+                    prop="canGetNum"
+                    label="获得数量">
+                  </el-table-column>
+                  <el-table-column
+                    sortable
+                    width="150"
+                    prop="description"
+                    label="描述/介绍">
+                  </el-table-column>
+                  <el-table-column
+                    sortable
+                    width="100"
+                    prop="validDay"
+                    label="有效时段">
+                    <template slot-scope="scope">
+                      <span v-if="scope.row.validDay">{{scope.row.validDay}} 天</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    sortable
+                    width="100"
+                    prop="validTime"
+                    label="有效日期">
+                  </el-table-column>
+                </el-table>
+              </template>
+            </el-col>
+          </el-row>
         </el-tab-pane>
       </el-tabs>
 
@@ -117,6 +177,7 @@
       return{
         activeName: 'first',
         couponDataTable:[],
+        discountCoupon:[],
         addOrEdit: 0,
         showCouponDialog:false,
         couponForm:{},
@@ -135,6 +196,20 @@
       this._pullCoupon()
     },
     methods:{
+      lookCouponMsg(id){
+        console.log(id);
+        let data = [
+          {
+            feild:'rid',
+            value:id,
+            joinType:'eq'
+          }
+        ]
+        this.$request(this.url.discountCouponComplexPageQuery,'json',data).then((res)=>{
+          this.discountCoupon = res.data.data
+          console.log(res.data.data);
+        })
+      },
       _pullCoupon(){
         let data = [
           {
@@ -144,6 +219,7 @@
           }
         ]
         this.$request(this.url.couponComplexPageQuery,'json',data).then((res)=>{
+
           console.log(res);
           this.couponDataTable = res.data.data
         }).catch((err)=>{

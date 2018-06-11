@@ -291,7 +291,7 @@
                     icon="el-icon-share"
                     round
                     @click="sendCoupon(scope.row,scope.$index)">
-                    发放优惠券
+                    发放代金券
                   </el-button>
                   <el-button
                     type="primary"
@@ -319,16 +319,117 @@
       </el-tabs>
 
       <!--发放优惠券弹框-->
-      <el-dialog top="4vh" title="发放优惠券" :visible.sync="showCouponDialog" ref="showCouponData">
-        <el-form :model="couponForm" ref="confirmCouponData" :rules="rulesCouponData">
-          <el-form-item label="数量" :label-width="formLabelWidth" prop="num">
-            <el-input autofocus="true" v-model.number="couponForm.num" auto-complete="off" placeholder="请输入数量"></el-input>
+      <el-dialog top="4vh" title="发放代金券" :visible.sync="showCouponDialog" ref="showCouponData">
+        <el-form :model="couponForm" ref="confirmCouponData" :rules="rulesCouponData" :label-width="formLabelWidth">
+          <el-form-item label="卡券名" >
+            <el-input
+              autofocus="true"
+              v-model="couponForm.name"
+              auto-complete="off"
+              @keyup="onkeyup(e)"
+              placeholder="请输入卡券名"></el-input>
           </el-form-item>
-          <el-form-item label="价格" :label-width="formLabelWidth" prop="price">
+          <el-form-item label="折扣规则">
+            <el-select
+              style="display: inline-block;margin: 0px 2px"
+              v-model="couponForm.tid"
+              placeholder="请选择卡券类型">
+              <el-option
+                v-for="(item,index) in couponType"
+                :key="index"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="价格" prop="price">
             <el-input autofocus="true" v-model.number="couponForm.price" auto-complete="off" placeholder="请输入数量"></el-input>
           </el-form-item>
-          <el-form-item label="总计" :label-width="formLabelWidth">
-            <el-input v-model="couponForm.num*couponForm.price"></el-input>
+          <el-form-item label="业务类型">
+            <el-select
+              style="display: inline-block;margin: 0px 2px"
+              v-model="couponForm.buzType"
+              placeholder="请选择业务类型">
+              <el-option label="回头券" value="head-back"></el-option>
+              <el-option label="新人券" value="new-give"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="限制类型">
+            <el-select
+              style="display: inline-block;margin: 0px 2px"
+              v-model="couponForm.getLimitType"
+              placeholder="请选择限制类型">
+              <el-option label="启用" value="enable"></el-option>
+              <el-option label="不启用" value="disable"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="使用下限">
+            <el-input
+              v-model.number="couponForm.minimumCharge"
+              auto-complete="off"
+              placeholder="请输入使用下限"></el-input>
+          </el-form-item>
+          <el-form-item label="获得下限">
+            <el-input
+              v-model.number="couponForm.minimumGiveCharge"
+              auto-complete="off"
+              placeholder="请输入获得下限"></el-input>
+          </el-form-item>
+          <el-form-item label="优惠金额">
+            <el-input
+              v-model.number="couponForm.discountAmount"
+              auto-complete="off"
+              placeholder="请输入优惠金额"></el-input>
+          </el-form-item>
+          <el-form-item label="发行数量">
+            <el-input
+              v-model.number="couponForm.publishNum"
+              auto-complete="off"
+              placeholder="请输入数量"></el-input>
+          </el-form-item>
+          <el-form-item label="获得数量">
+            <el-input
+              v-model.number="couponForm.canGetNum"
+              auto-complete="off"
+              placeholder="请输入次数"></el-input>
+          </el-form-item>
+          <el-form-item label="期限类型">
+            <el-select
+              style="display: inline-block;margin: 0px 2px"
+              v-model="couponForm.validType"
+              placeholder="选择使用期限类型">
+              <el-option label="到期时间" value="time"></el-option>
+              <el-option label="时间段" value="day"></el-option>
+            </el-select>
+            <el-input
+              style="width: 220px;margin: 5px 0px"
+              v-model="couponForm.validDay"
+              placeholder="输入天"
+              v-if="couponForm.validType === 'day'">
+            </el-input>
+            <el-date-picker
+              style="width: 220px;margin: 5px 0px"
+              v-model="couponForm.validTimeStr"
+              type="date"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              v-if="couponForm.validType === 'time'"
+              placeholder="选择日期">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="描述">
+            <el-input v-model="couponForm.description" auto-complete="off" placeholder="请输入描述"></el-input>
+          </el-form-item>
+          <el-form-item label="状态">
+            <el-select
+              style="display: inline-block;margin: 0px 2px"
+              v-model="couponForm.status"
+              placeholder="请选择状态">
+              <el-option label="可用" value="enable"></el-option>
+              <el-option label="不可用" value="disable"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="总计">
+            <el-input v-model="couponForm.publishNum*couponForm.price"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -586,6 +687,7 @@
       data (){
         return{
           restaurantDatapid:0,
+          couponType: [],
           picCollection: {
             brandLogo: 'restaurant/brandLogo/',
             businessPermitImg: 'restaurant/businessPermitImg/',
@@ -684,8 +786,22 @@
       },
       created(){
         this._pullTable();
+        this._pullCouponType()
       },
       methods: {
+        _pullCouponType(){
+          let data = [
+            {
+              feild:'status',
+              value:'enable',
+              joinType:'eq'
+            }
+          ]
+          this.$request(this.url.couponType,'json',data).then((res)=>{
+            this.couponType = res.data.data
+            console.log(res.data.data,'1231324654');
+          })
+        },
         addRetaurantPre(){
           this.showFormMsg = true;
           this.addOrEdit = 0;
@@ -812,25 +928,6 @@
 
               this.$request(this.url.legalPerson2,'json',data3).then((res)=>{
                 let response = res.data.data
-                // var address = this.restaurantData.country + this.restaurantData.province + this.restaurantData.city + this.restaurantData.area + this.restaurantData.address
-                // var longtitude = 0;
-                // var latitude = 0;
-                // var url = "http://api.map.baidu.com/geocoder/v2/?address=" + address + "&output=json&ak=FG7wxr1VUj0k2NwoO3yXzymd&callback=?";
-
-                // $.getJSON(url, function (data) {
-                //   latitude = data.result.location.lat.toFixed(3);
-                //   longtitude = data.result.location.lng.toFixed(3);
-                //   console.log(latitude,longtitude,'打印经纬度');
-                //   console.log(_this.restaurantData);
-                //   _this.restaurantData.latitude = latitude
-                //   _this.restaurantData.longitude = longtitude
-                //
-                //
-                //
-                //
-                // });
-
-
                 let data1 = _this.restaurantData
                 console.log(data1,'最后提交的数据');
                 _this.$request(_this.url.restaurant1,'json',_this.restaurantData).then((res)=>{
@@ -844,19 +941,9 @@
                 }).catch((err)=>{
                   console.log(err);
                 })
-
-
-
                 this.restaurantData.pid = response[0].id
                 console.log(this.restaurantDatapid,'得到餐厅pid');
                 //pid就是法人相关
-                // console.log(data,'添加餐厅时提交的数据');
-                // console.log(this.restaurantPerson);
-                // console.log(this.restaurantDatapid,'pidpid');
-                /**/
-
-
-
               }).catch((err)=>{
                 this.$message({
                   type: 'info',
