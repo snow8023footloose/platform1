@@ -363,6 +363,17 @@ td
 .el-tab-pane[data-v-60204f04]
   width 50%
 
+
+@media screen and (max-width: 1400px)
+  .el-col
+    .el-tabs__content
+      height 530px
+      padding 15px
+      background white
+      border-radius 10px
+      box-shadow 1px 1px 25px rgba(0, 0, 0, 0.28)
+
+
 @media screen and (max-width: 1200px)
   .el-table--fit
     height 510px !important
