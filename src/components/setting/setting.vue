@@ -731,8 +731,8 @@ export default {
         id:"qcode",    //div的id
         appid: "wx687467655647657e",
         scope: "snsapi_login",
-        redirect_uri: "http://8yziif.natappfree.cc/restaurantWithdrawAccount/bind",        //回调地址
-        state: '1524988356660049,' + _this.WechatRecode,　　　　　　//参数，可带可不带
+        redirect_uri: "https://www.xwfwlkj.com/api/restaurantWithdrawAccount/bind",        //回调地址
+        state: localStorage.getItem('rid')+',' + _this.WechatRecode,　　　　　　//参数，可带可不带
         style: "",　　　　　　　//样式  提供"black"、"white"可选，默认为黑色文字描述
         href: "/"              //自定义样式链接，第三方可根据实际需求覆盖默认样式。
       });

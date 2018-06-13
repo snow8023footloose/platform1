@@ -74,7 +74,8 @@
                     width="120">
                     <template slot-scope="scope">
                       <span v-if="scope.row.type === 'coupon'">优惠券</span>
-                      <el-button size="mini" v-if="scope.row.type === 'platform-voucher'">平台代金券</el-button>
+                      <span v-if="scope.row.type === 'voucher'">代金券</span>
+                      <span style="color: #409EFF" v-if="scope.row.type === 'platform-voucher'">平台代金券</span>
                     </template>
                   </el-table-column>
                   <el-table-column

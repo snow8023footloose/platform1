@@ -298,7 +298,7 @@
                     size="mini"
                     icon="el-icon-edit"
                     circle
-                    @click="editRestaurant(scope.row,scope.$index); showFormMsg = true">
+                    @click="editRestaurant(scope.row,scope.$index); showFormMsgUpdate = true">
                   </el-button>
                   <el-button
                     type="danger"
@@ -513,7 +513,6 @@
           <el-form-item label="详细地址" :label-width="formLabelWidth" prop="address">
             <el-input v-model="restaurantData.address" auto-complete="off" placeholder="请填写餐厅详细地址"></el-input>
           </el-form-item>
-
           <!--<el-form-item label="业务员" :label-width="formLabelWidth">-->
             <!--<el-input v-model.number="restaurantData.eid" auto-complete="off" placeholder="请填写业务员id"></el-input>-->
           <!--</el-form-item>-->
@@ -633,6 +632,192 @@
           <el-button type="primary" @click="addRestaurant('confirmRestaurantData','showRestaurantData')">保存餐厅</el-button>
         </div>
       </el-dialog>
+      <el-dialog top="4vh" title="餐厅信息" :visible.sync="showFormMsgUpdate" ref="showRestaurantData">
+        <el-form :model="restaurantData" ref="confirmRestaurantData" :rules="rulesRestaurantData">
+          <el-form-item v-if="addNewPerson === 1" label="法人姓名" :label-width="formLabelWidth">
+            <el-input autofocus="true" v-model="restaurantPerson.name" auto-complete="off" placeholder="请填写法人姓名"></el-input>
+          </el-form-item>
+          <el-form-item v-if="addNewRestaurant === 1" label="法人姓名" :label-width="formLabelWidth">
+            <el-input v-model="restaurantPerson.name" auto-complete="off" placeholder="已注册用户，请完善法人姓名"></el-input>
+          </el-form-item>
+          <el-form-item v-if="addNewPerson === 1" label="性别" :label-width="formLabelWidth" prop="male" style="text-align: left">
+            <el-select v-model="restaurantPerson.gender" placeholder="性别">
+              <el-option label="男" value="male"></el-option>
+              <el-option label="女" value="female"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="身份证" :label-width="formLabelWidth" prop="idcard">
+            <el-input v-model:value="restaurantPerson.idcard" @change="confirmIdcard" auto-complete="off" placeholder="请填写法人身份证"></el-input>
+          </el-form-item>
+          <!--<el-form-item v-if="addNewPerson === 1" label="证件正面" :label-width="formLabelWidth">-->
+            <!--<upload-->
+              <!--v-on:ToUrl="legalPersonPicF"-->
+              <!--:name="UID('/legalPerson/')"-->
+              <!--:target="this.restaurantPerson.idcardFrontImg"></upload>-->
+          <!--</el-form-item>-->
+          <!--<el-form-item v-if="addNewPerson === 1" label="证件背面" :label-width="formLabelWidth">-->
+            <!--<upload-->
+              <!--v-on:ToUrl="legalPersonPicB"-->
+              <!--:name="UID('/legalPerson/')"-->
+              <!--:target="this.restaurantPerson.idcardBackImg"></upload>-->
+          <!--</el-form-item>-->
+          <el-form-item v-if="addNewPerson === 1" label="手机号" :label-width="formLabelWidth">
+            <el-input v-model="restaurantPerson.phone" auto-complete="off" placeholder="请填写法人手机号"></el-input>
+          </el-form-item>
+          <span v-if="addNewRestaurant === 1">
+          <el-form-item label="餐厅名称" :label-width="formLabelWidth" prop="name">
+            <el-input v-model="restaurantData.name" auto-complete="off" placeholder="请填写餐厅名称"></el-input>
+          </el-form-item>
+          <el-form-item label="餐厅介绍" :label-width="formLabelWidth">
+            <el-input v-model="restaurantData.description" auto-complete="off" placeholder="请填写简要餐厅介绍"></el-input>
+          </el-form-item>
+          <el-form-item label="电话" :label-width="formLabelWidth" prop="phone">
+            <el-input v-model="restaurantData.phone" auto-complete="off" placeholder="请填写餐厅常用电话"></el-input>
+          </el-form-item>
+          <el-form-item label="备用电话" :label-width="formLabelWidth" prop="backupPhone">
+            <el-input v-model="restaurantData.backupPhone" auto-complete="off" placeholder="请填写餐厅固定电话"></el-input>
+          </el-form-item>
+          <el-form-item label="餐厅类型" :label-width="formLabelWidth" prop="tid" style="text-align: left">
+            <el-select v-model.number="restaurantData.tid" placeholder="请选择餐厅类型">
+              <el-option label="快餐店" value="1"></el-option>
+              <el-option label="粉店" value="2"></el-option>
+              <el-option label="餐馆" value="3"></el-option>
+              <el-option label="早餐馆" value="4"></el-option>
+              <el-option label="其他" value="5"></el-option>
+            </el-select>
+          </el-form-item>
+          <!--<el-form-item label="餐厅状态" :label-width="formLabelWidth" prop="status" style="text-align: left">-->
+            <!--<el-select v-model="restaurantData.status" placeholder="餐厅状态">-->
+              <!--<el-option label="可用" value="enable"></el-option>-->
+              <!--<el-option label="不可用" value="disable"></el-option>-->
+            <!--</el-select>-->
+          <!--</el-form-item>-->
+          <el-form-item label="国家" :label-width="formLabelWidth">
+            <el-input v-model="restaurantData.country" auto-complete="off" placeholder="请填写国家"></el-input>
+          </el-form-item>
+          <el-form-item label="省" :label-width="formLabelWidth">
+            <el-input v-model="restaurantData.province" auto-complete="off" placeholder="请填写餐厅所在省"></el-input>
+          </el-form-item>
+          <el-form-item label="城市" :label-width="formLabelWidth">
+            <el-input v-model="restaurantData.city" auto-complete="off" placeholder="请填写餐厅所在城市"></el-input>
+          </el-form-item>
+          <el-form-item label="县/区" :label-width="formLabelWidth">
+            <el-input v-model="restaurantData.area" auto-complete="off" placeholder="请填写餐厅所在城市"></el-input>
+          </el-form-item>
+          <el-form-item label="详细地址" :label-width="formLabelWidth" prop="address">
+            <el-input v-model="restaurantData.address" auto-complete="off" placeholder="请填写餐厅详细地址"></el-input>
+          </el-form-item>
+          <!--<el-form-item label="业务员" :label-width="formLabelWidth">-->
+            <!--<el-input v-model.number="restaurantData.eid" auto-complete="off" placeholder="请填写业务员id"></el-input>-->
+          <!--</el-form-item>-->
+          <!--<el-form-item label="饿了么" :label-width="formLabelWidth">-->
+            <!--<el-input v-model="restaurantData.eleId" auto-complete="off" placeholder="请填写饿了么id"></el-input>-->
+          <!--</el-form-item>-->
+          <el-form-item label="Wifi名" :label-width="formLabelWidth">
+            <el-input v-model="restaurantData.wifiName" auto-complete="off" placeholder="请填写Wifi名"></el-input>
+          </el-form-item>
+          <el-form-item label="Wifi密码" :label-width="formLabelWidth">
+            <el-input v-model="restaurantData.wifiPassword" auto-complete="off" placeholder="请填写Wifi密码"></el-input>
+          </el-form-item>
+          <el-form-item label="品牌名称" :label-width="formLabelWidth">
+            <el-input v-model="restaurantData.brandName" auto-complete="off" placeholder="请填写品牌名称"></el-input>
+          </el-form-item>
+          <el-form-item label="LOGO" :label-width="formLabelWidth">
+            <upload
+              v-on:ToUrl="listenUrl"
+              :name="UID('/restaurant/')"
+              :target="this.restaurantData.bannerLogo"></upload>
+          </el-form-item>
+          <el-form-item v-model="restaurantData.businessTime" label="时间段" :label-width="formLabelWidth">
+            <el-time-picker
+              style="width: 170px"
+              v-model="startTime"
+              :picker-options="{
+                selectableRange: '00:00:00 - 23:59:59'
+              }"
+              :placeholder="startTimePre">
+            </el-time-picker>
+            <el-col class="line" style="text-align: center; display: inline-block; float: none" :span="2">-</el-col>
+            <el-time-picker
+              style="width: 170px"
+              arrow-control
+              v-model="endTime"
+              @change="endTimeFun"
+              :picker-options="{
+                selectableRange: '00:00:00 - 23:59:59'
+              }"
+              :placeholder="endTimePre">
+            </el-time-picker>
+          </el-form-item>
+          <el-form-item label="餐厅logo" :label-width="formLabelWidth">
+            <upload
+              v-on:ToUrl="listenUrlLogo"
+              :name="UID('/restaurant/')"
+              :target="this.restaurantData.logo"></upload>
+          </el-form-item>
+          <el-form-item label="执照号" :label-width="formLabelWidth" prop="businessPermitNum">
+            <el-input v-model.number="restaurantData.businessPermitNum" auto-complete="off" placeholder="请填写餐厅执照号"></el-input>
+          </el-form-item>
+          <el-form-item label="执照图" :label-width="formLabelWidth">
+            <upload
+              v-on:ToUrl="listenUrl1"
+              :name="UID('/restaurant/')"
+              :target="this.restaurantData.businessPermitImg"></upload>
+          </el-form-item>
+          <el-form-item label="许可证号" :label-width="formLabelWidth" prop="foodPermitNum">
+            <el-input v-model.number="restaurantData.foodPermitNum" auto-complete="off" placeholder="请填写食品许可证号"></el-input>
+          </el-form-item>
+          <el-form-item label="许可证图" :label-width="formLabelWidth">
+            <upload
+              v-on:ToUrl="listenUrl2"
+              :name="UID('/restaurant/')"
+              :target="this.restaurantData.foodPermitImg"></upload>
+          </el-form-item>
+          <el-form-item label="门头大图" :label-width="formLabelWidth">
+            <upload
+              v-on:ToUrl="listenUrlDoorImg"
+              :name="UID('/restaurant/')"
+              :target="this.restaurantData.doorImg"></upload>
+          </el-form-item>
+          <el-form-item label="收银台图" :label-width="formLabelWidth">
+            <upload
+              v-on:ToUrl="listenUrl3"
+              :name="UID('/restaurant/')"
+              :target="this.restaurantData.cashierDeskImg"></upload>
+          </el-form-item>
+          <el-form-item id="sencePic" label="场景图" :label-width="formLabelWidth">
+            <upload
+              v-on:ToUrl="listenUrl4"
+              :name="UID('/restaurant/')"
+              :target="this.restaurantData.sceneImgOne"></upload>
+            <upload
+              v-on:ToUrl="listenUrl5"
+              :name="UID('/restaurant/')"
+              :target="this.restaurantData.sceneImgTwo"></upload>
+            <upload
+              v-on:ToUrl="listenUrl6"
+              :name="UID('/restaurant/')"
+              :target="this.restaurantData.sceneImgThree"></upload>
+          </el-form-item>
+          <el-form-item label="服务费" :label-width="formLabelWidth">
+            <el-input v-model.number="restaurantData.serviceCharge" auto-complete="off" placeholder="请填写软件服务费"></el-input>
+          </el-form-item>
+            <el-form-item label="经度" :label-width="formLabelWidth">
+            <el-input v-model.number="restaurantData.longitude" auto-complete="off" placeholder="备注"></el-input>
+          </el-form-item>
+            <el-form-item label="纬度" :label-width="formLabelWidth">
+            <el-input v-model.number="restaurantData.latitude" auto-complete="off" placeholder="备注"></el-input>
+          </el-form-item>
+          <el-form-item label="备注" :label-width="formLabelWidth">
+            <el-input v-model="restaurantData.remark" auto-complete="off" placeholder="备注"></el-input>
+          </el-form-item>
+          </span>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="showFormMsg = false">取 消</el-button>
+          <el-button type="primary" @click="updateReataurant('confirmRestaurantData','showRestaurantData')">修改餐厅</el-button>
+        </div>
+      </el-dialog>
 
       <!--添加餐厅按钮-->
       <div class="bnt-group">
@@ -713,6 +898,7 @@
           addOrEdit: 0,
           showForm: false,
           showFormMsg: false,
+          showFormMsgUpdate:false,
           showCouponDialog:false,
           showFormCeo: false,
           showFormBrief: false,
@@ -1104,7 +1290,7 @@
               type: 'success',
               message: '数据提交成功!'
             });
-            this.showFormMsg = !this.showFormMsg
+            this.showFormMsgUpdate = !this.showFormMsgUpdate
             this._pullTable();
             // this.restaurantDataTable[this.restaurantIndex] = row
             // console.log(this.restaurantDataTable[this.restaurantIndex]);
