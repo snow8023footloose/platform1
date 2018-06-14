@@ -74,7 +74,6 @@
               <!--<span slot="title" class="title">系统功能</span>-->
             <!--</el-menu-item>-->
           <!--</router-link>-->
-
         </el-menu>
       </el-col>
       <el-col :span="19" >
@@ -113,7 +112,6 @@ export default {
       mydata:{},
       fullscreenLoading: false,
       value5:100,
-
       loginstate: false,
       loginShow: true,
       owner: false,
@@ -240,10 +238,6 @@ export default {
 
     //设置cookie
 
-  },
-  created() {
-    this.ruleForm2.username = 17375636967
-    this.ruleForm2.password = 17375636967
   },
   mounted() {
     this.Height();
@@ -603,6 +597,4 @@ td
       margin-left 58% !important
     .block,.small-block
       width 73%
-
-
 </style>

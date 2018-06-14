@@ -916,21 +916,11 @@
           restaurantData: {
           },
           restaurantIndex: 0,
-          options2: [{
-            label: '江苏',
-            cities: []
-          }, {
-            label: '浙江',
-            cities: []
-          }],
+
           props: {
             value: 'label',
             children: 'cities'
           },
-          fileList: [{
-            name: '1.jpg',
-            url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-          }],
           rulesCouponData:{
             price: [
               {required: true, message:'请输入价格', trigger:'blur'},

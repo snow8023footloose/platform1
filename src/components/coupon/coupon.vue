@@ -161,7 +161,6 @@
           <el-button type="primary" @click="confirmCoupon('confirmCouponData','showCouponData')">确定添加</el-button>
         </div>
       </el-dialog>
-
       <!--添加卡券按钮-->
       <div class="bnt-group">
         <el-button-group>
@@ -220,7 +219,6 @@
           }
         ]
         this.$request(this.url.couponComplexPageQuery,'json',data).then((res)=>{
-
           console.log(res);
           this.couponDataTable = res.data.data
         }).catch((err)=>{
@@ -291,8 +289,6 @@
         return sums;
       },
     }
-
-
   }
 </script>
 
